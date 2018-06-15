@@ -1,20 +1,69 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
-</div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
-
+<div class="container">
+    <div class="row mt-5">
+      <div class="col-md-12 text-center">
+        <h1 class="h1-responsive">Todo App:</h1>
+      </div>
+    </div>
+    <div class="row mt-5 ">
+      
+      <div class="col-md-5 list mb-1">
+        <div class="row px-4 mt-3">
+          <div class="form-group full-width" *ngIf="todos?.length > 0">
+            <input [(ngModel)]="query" placeholder="Search tasks">
+            <br>
+            <br>
+            Filter By:
+            <select [(ngModel)]="filterBy">
+              <option value="{{today.getFullYear()}}-{{month}}-{{today.getDate()}}">Today</option>
+            </select>
+            <br>
+            <br>
+            <form class="full-width">
+              <div *ngFor="let todo of todos | filter:query | filter:filterBy">
+                <div *ngIf="!todo.parent">
+                  <input type="checkbox" id="{{todo.id}}" (click)="toggleTodoComplete(todo)" [checked]="todo.complete">
+                  &nbsp;&nbsp;<label for="{{todo.id}}" [ngClass]="{'strikethrough' : todo.complete}">{{todo.title}}</label>
+                  <span style="color: red">&nbsp;&nbsp;&nbsp;&nbsp;Due date: {{todo.due_date}}</span>
+                  <button type="button" class="close" aria-label="Close" style="float: right;" (click)="removeTodo(todo)">
+                    <span aria-hidden="true" >&times;</span>
+                  </button>
+                  <div *ngFor="let child of todos">
+                    <div *ngIf="child.parent == todo.id">
+                      &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="{{child.id}}" (click)="toggleTodoComplete(child)" [checked]="child.complete">
+                      &nbsp;&nbsp;<label for="{{child.id}}" [ngClass]="{'strikethrough' : child.complete}">{{child.title}}</label>
+                      <span style="color: red">&nbsp;&nbsp;&nbsp;&nbsp;Due date: {{child.due_date}}</span>
+                      <button type="button" class="close" aria-label="Close" style="float: right;" (click)="removeTodo(child)">
+                        <span aria-hidden="true" >&times;</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="row px-4 mt-1">
+          <div class="md-form">
+            <form>
+              <a class="prefix">
+                <i class="fa fa-plus prefix"></i>
+              </a>
+              <input mdbActive type="text" id="form2" class="form-control" [(ngModel)]="newTodo.title" name="titleAdd" required>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Due date: <input type="date" [(ngModel)]="newTodo.due_date" name="dueDateAdd" required>
+              <input type="submit" value="Add new task" [disabled]="!newTodo?.title?.length || !newTodo?.due_date?.length" (click)="addTodo()">
+              <label for="form2">Add new task</label>
+            </form>
+            <br>
+            <input type="checkbox" (click)="toggleDropdown()" [checked]="dropdown">
+            &nbsp;&nbsp;Is a subtask?
+            <div *ngIf="dropdown">
+              Select parent task: 
+              <select [(ngModel)]="newTodo.parent">
+                <option *ngFor="let t of tasks" [value]="t.id">{{t.title}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
